@@ -1,0 +1,32 @@
+data:
+  ROOT: '../data/FOLD_1'
+  TRAIN_FOLDER: 'train/'
+  VAL_FOLDER: 'test/'
+  
+  train_val_size: 0.2
+  train_path: '../data/train.json'
+  val_path: '../data/val.json'
+
+  image_size: (112, 224)
+  batch_size: 32
+  num_workers: 8
+
+  pix_thres: 60
+
+# Extractors params
+## ConvNext configuration
+convnext: 
+  depths: [3, 3, 9, 3]
+  dims: [96, 192, 384, 768]
+
+# Classfier params
+cls: 
+  dims: [768, 128, 0]
+  prod: 0.5
+
+# For training process
+train:
+  epoch_n: 50
+  lr: 0.0002
+  loss_ratio: 0.1
+  clip_value: 1
