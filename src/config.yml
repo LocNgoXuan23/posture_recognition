@@ -9,7 +9,7 @@ data:
 
   image_size: (112, 224)
   batch_size: 32
-  num_workers: 8
+  num_workers: 1
 
   pix_thres: 60
 
@@ -27,6 +27,6 @@ cls:
 # For training process
 train:
   epoch_n: 50
-  lr: 0.0002
+  lr: 0.00005
   loss_ratio: 0.1
   clip_value: 1

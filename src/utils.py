@@ -11,6 +11,10 @@ def read_json(file):
         data = json.load(f)
     return data
 
+def write_json(file,data):
+    with open(file,'w') as f:
+        json.dump(data,f,indent = 4)
+
 def get_label(path):
     lookup = {str(k): k for k in range(1,24)}
     try:
