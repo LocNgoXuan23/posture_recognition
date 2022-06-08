@@ -38,7 +38,6 @@ class Trainer:
 		self.model.train()
 		train_loss_epoch = 0
 		train_acc_epoch = []
-
 		for img, label in tqdm(train_loader):
 			self.optimizer.zero_grad()
 
@@ -50,7 +49,6 @@ class Trainer:
 			train_loss_epoch += loss.item()
 			loss.backward()
 			
-			# nn.utils.clip_grad_value_(self.model.parameters(), clip_value=self.clip_value)
 			self.optimizer.step()
 			self.ema_model.update(self.model.parameters())
 

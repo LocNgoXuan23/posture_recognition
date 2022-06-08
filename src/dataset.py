@@ -34,7 +34,8 @@ class IR_ContrasDataset(Dataset):
 	
 	def __getitem__(self, item):
 		image_path_1 = self.data[item]
-		image_path_2 = self.data[item-2]
+		image_path_2 = self.data[item]
+
 		img1, label1 = process(image_path_1, self.cfgs)
 		img2, label2 = process(image_path_2, self.cfgs)
 		return img1, label1, img2, label2
@@ -42,6 +43,13 @@ class IR_ContrasDataset(Dataset):
 	def __len__(self):
 		return 2*len(self.data)
 
+class TwoCropTransform:
+    """Create two crops of the same image"""
+    def __init__(self, transform):
+        self.transform = transform
+
+    def __call__(self, x):
+        return [self.transform(x), self.transform(x)]
 
 def process(image_path, cfgs):
 	label = get_label(image_path)
@@ -50,10 +58,10 @@ def process(image_path, cfgs):
 	img[img < thres] = 0# cfgs['data']['pix_thres']] = 0 
 	# img = cv2.equalizeHist(img)
 	img = cv2.resize(img, (224, 224)) #cfgs['data']['image_size'])
+	# img = [transform(img), transform(img)]
 	img = transform(img)
 	label = torch.LongTensor([int(label)])
 	return img, label
-
 
 def transform(image):
 	return transforms.Compose(
@@ -68,22 +76,29 @@ def transform(image):
 
 
 def get_loader(cfgs, dataset_type):
-  train_dataset = dataset_type(cfgs,'train')
-  val_dataset = dataset_type(cfgs,'val')
+	train_dataset = dataset_type(cfgs,'train')
+	val_dataset = dataset_type(cfgs,'val')
 
-  train_loader = DataLoader(
+
+	train_loader = DataLoader(
 		dataset = train_dataset,
 		batch_size = cfgs['data']['batch_size'],
 		num_workers = cfgs['data']['num_workers']
-  )
+	)
 
-  val_loader = DataLoader(
-		  dataset = val_dataset,
-		  batch_size = cfgs['data']['batch_size'],
-		  num_workers = cfgs['data']['num_workers']
-  )
-  print("DONE LOADING DATA !")
-  return train_loader, val_loader
+	val_loader = DataLoader(
+		dataset = val_dataset,
+		batch_size = cfgs['data']['batch_size'],
+		num_workers = cfgs['data']['num_workers']
+	)
+
+	# for img, label in train_loader:
+	# 	print(img[0].shape)
+	# 	print(img[1].shape)
+	# 	break
+	
+	print("DONE LOADING DATA !")
+	return train_loader, val_loader
 
 
 if __name__=='__main__':
